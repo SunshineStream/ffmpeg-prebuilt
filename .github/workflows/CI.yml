@@ -118,24 +118,43 @@ jobs:
           # libopus
           sudo apt-get install libopus-dev
 
-          # libx264
-          sudo apt-get install libx264-dev
+          # libx264... build from source to enable static library
+          # sudo apt-get install libx264-dev
 
-          # libx265
-          sudo apt-get install libx265-dev libnuma-dev
+          # libx265... build from source to enable static library
+          # sudo apt-get install libx265-dev libnuma-dev
 
       - name: Compile NVENC
         # https://trac.ffmpeg.org/wiki/HWAccelIntro#NVENC
         run: |
           git clone https://git.videolan.org/git/ffmpeg/nv-codec-headers.git
           cd nv-codec-headers
-          make
+          make -j$(nproc)
           sudo make install
 
       - name: Build
         run: |
           mkdir -p ~/ffmpeg_sources ~/bin
 
+          # libx264
+          cd ~/ffmpeg_sources && \
+          git -C x264 pull 2> /dev/null || git clone --depth 1 https://code.videolan.org/videolan/x264.git && \
+          cd x264 && \
+          PATH="$HOME/bin:$PATH" PKG_CONFIG_PATH="$HOME/ffmpeg_build/lib/pkgconfig" ./configure --prefix="$HOME/ffmpeg_build" --bindir="$HOME/bin" --enable-static --enable-pic && \
+          PATH="$HOME/bin:$PATH" make -j$(nproc) && \
+          make install
+
+          # libx265
+          # sudo apt-get install libnuma-dev && \
+          cd ~/ffmpeg_sources && \
+          wget -O x265.tar.bz2 https://bitbucket.org/multicoreware/x265_git/get/master.tar.bz2 && \
+          tar xjvf x265.tar.bz2 && \
+          cd multicoreware*/build/linux && \
+          PATH="$HOME/bin:$PATH" cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$HOME/ffmpeg_build" -DENABLE_SHARED=off ../../source && \
+          PATH="$HOME/bin:$PATH" make -j$(nproc) && \
+          make install
+
+          # ffmpeg
           cd ~/ffmpeg_sources && \
           wget -O ffmpeg-snapshot.tar.bz2 https://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2 && \
           tar xjvf ffmpeg-snapshot.tar.bz2 && \
