@@ -15,13 +15,9 @@ jobs:
     timeout-minutes: 90
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Checkout media-autobuild_suite
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
-          repository: m-ab-s/media-autobuild_suite
-          path: media-autobuild_suite
+          submodules: true
 
       - name: Cache msys64
         id: cache-msys64
@@ -80,7 +76,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Dependencies
         run: |
