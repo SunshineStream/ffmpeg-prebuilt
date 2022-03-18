@@ -1,0 +1,3 @@
+[submodule "media-autobuild_suite"]
+	path = media-autobuild_suite
+	url = https://github.com/m-ab-s/media-autobuild_suite.git
