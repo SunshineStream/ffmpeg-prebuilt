@@ -16,8 +16,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Checkout media-autobuild_suite
+        uses: actions/checkout@v3
         with:
-          submodules: true
+          repository: m-ab-s/media-autobuild_suite
+          path: media-autobuild_suite
 
       - name: Cache msys64
         id: cache-msys64
