@@ -39,7 +39,7 @@ jobs:
         working-directory: media-autobuild_suite
         run: |
           sed -i 's/do_prompt /echo /g' build/media-suite_helper.sh build/media-suite_compile.sh
-          sed -i 's/read.*yn/yn=y' build/media-suite_update.sh
+          sed -i 's/read.*yn/yn=y/g' build/media-suite_update.sh
 
       - name: Compile the suite
         shell: cmd
