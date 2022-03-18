@@ -34,10 +34,12 @@ jobs:
         shell: pwsh
         run: cp build/*.* media-autobuild_suite/build/
 
-      - name: Replace do_prompt
+      - name: Patch bash scripts
         shell: pwsh
         working-directory: media-autobuild_suite
-        run: sed -i 's/do_prompt /echo /g' build/media-suite_helper.sh build/media-suite_compile.sh
+        run: |
+          sed -i 's/do_prompt /echo /g' build/media-suite_helper.sh build/media-suite_compile.sh
+          sed -i 's/read /#read ' build/media-suite_update.sh
 
       - name: Compile the suite
         shell: cmd
